@@ -27,6 +27,7 @@
 #include <osvr/Common/ClientInterface.h>
 #include <osvr/Util/Verbosity.h>
 #include "GetJSONStringFromTree.h"
+#include <osvr/Common/SkeletonComponent.h>
 
 // Library/third-party includes
 #include <boost/assert.hpp>
@@ -138,6 +139,11 @@ OSVR_ClientContextObject::getRoomToWorldTransform() const {
 void OSVR_ClientContextObject::setRoomToWorldTransform(
     osvr::common::Transform const &xform) {
     m_setRoomToWorldTransform(xform);
+}
+
+osvr::common::PathTree const &OSVR_ClientContextObject::getArticulationTree(
+    std::string const &path){
+    return m_getArticulationTree(path);
 }
 
 ClientContextDeleter OSVR_ClientContextObject::getDeleter() const {

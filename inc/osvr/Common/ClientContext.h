@@ -31,6 +31,8 @@
 #include <osvr/Common/ClientInterfacePtr.h>
 #include <osvr/Common/PathTree_fwd.h>
 #include <osvr/Common/Transform_fwd.h>
+#include <osvr/Common/DeviceComponentPtr.h>
+#include <osvr/Common/SkeletonComponentPtr.h>
 #include <osvr/Common/ClientInterfaceFactory.h>
 #include <osvr/Util/KeyedOwnershipContainer.h>
 #include <osvr/Util/UniquePtr.h>
@@ -114,6 +116,9 @@ struct OSVR_ClientContextObject : boost::noncopyable {
     /// received, etc.)
     OSVR_COMMON_EXPORT bool getStatus() const;
 
+    OSVR_COMMON_EXPORT osvr::common::PathTree const &getArticulationTree(
+        std::string const &path);
+
   protected:
     /// @brief Constructor for derived class use only.
     OSVR_COMMON_EXPORT
@@ -152,6 +157,10 @@ struct OSVR_ClientContextObject : boost::noncopyable {
     /// world space.
     virtual void
     m_setRoomToWorldTransform(osvr::common::Transform const &xform) = 0;
+
+    /// @brief Implementation of accessor for Skeleton Component
+    virtual osvr::common::PathTree const &m_getArticulationTree(
+    std::string const &path) = 0;
 
     std::string const m_appId;
     InterfaceList m_interfaces;
