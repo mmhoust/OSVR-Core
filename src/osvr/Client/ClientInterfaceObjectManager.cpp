@@ -131,7 +131,8 @@ namespace client {
                                       << " unconnected paths successfully");
     }
 
-    RemoteHandlerPtr ClientInterfaceObjectManager::getRemoteHandlerForPath(std::string const &path){
+    RemoteHandlerPtr ClientInterfaceObjectManager::getRemoteHandlerForPath(
+        std::string const &path) {
         return m_interfaces.getHandlerForPath(path);
     }
 } // namespace client

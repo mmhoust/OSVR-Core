@@ -141,8 +141,8 @@ void OSVR_ClientContextObject::setRoomToWorldTransform(
     m_setRoomToWorldTransform(xform);
 }
 
-osvr::common::PathTree const &OSVR_ClientContextObject::getArticulationTree(
-    std::string const &path){
+osvr::common::PathTree const &
+OSVR_ClientContextObject::getArticulationTree(std::string const &path) {
     return m_getArticulationTree(path);
 }
 
