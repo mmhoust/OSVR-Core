@@ -6,10 +6,11 @@
         "directModeEnabled": true,
         "directDisplayIndex": 0,
         "directHighPriorityEnabled": true,
-        "numBuffers": 1,
-        "verticalSyncEnabled": false,
+        "numBuffers": 2,
+        "verticalSyncEnabled": true,
         "verticalSyncBlockRenderingEnabled": true,
-        "renderOverfillFactor": 1.5,
+        "renderOverfillFactor": 1.2,
+        "renderOversampleFactor": 1.0,
 
         "window": {
             "title": "OSVR",
@@ -23,10 +24,18 @@
             "bitsPerColor": 8
         },
 
+		"prediction": {
+				"enabled": true,
+				"staticDelayMS": 32,
+				"leftEyeDelayMS": 7.5,
+				"rightEyeDelayMS": 0,
+				"localTimeOverride": true
+		},
+
         "timeWarp": {
             "enabled": true,
             "asynchronous": false,
-            "maxMsBeforeVSync": 5
+            "maxMsBeforeVSync": 0
         }
     }
 }

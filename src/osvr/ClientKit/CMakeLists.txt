@@ -59,10 +59,17 @@ target_link_libraries(${LIBNAME_FULL}
     osvrClient
     osvrUtilCpp
     osvrCommon
-    eigen-headers
     JsonCpp::JsonCpp
-    vendored-vrpn)
+    vendored-vrpn
+    spdlog
+    eigen-headers)
 
+if(ANDROID)
+    target_link_libraries(${LIBNAME_FULL}
+        PRIVATE
+        osvrServer)
+endif()
+        
 ###
 # C++ (header-only) interface
 ###

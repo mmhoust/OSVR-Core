@@ -51,9 +51,25 @@
 using std::endl;
 using namespace osvr::vbtracker;
 
-static osvr::server::detail::StreamPrefixer
+namespace myDetail {
+  class StreamPrefixer {
+  public:
+    StreamPrefixer(const char *prefix, std::ostream &os)
+      : m_prefix(prefix), m_os(&os) {}
+    template <typename T> std::ostream &operator<<(T val) {
+      return (*m_os) << m_prefix << val;
+    }
+
+  private:
+    const char *m_prefix;
+    std::ostream *m_os;
+  };
+
+} // namespace myDetail
+
+static myDetail::StreamPrefixer
     out("[OSVR Video Tracker Calibration] ", std::cout);
-static osvr::server::detail::StreamPrefixer
+static myDetail::StreamPrefixer
     err("[OSVR Video Tracker Calibration] ", std::cerr);
 
 /// @brief OpenCV's simple highgui module refers to windows by their name, so we
@@ -172,9 +188,10 @@ class TrackerCalibrationApp {
 #if 0
                         cv::line(m_display, debugData[i].measurement, debugData[i].measurement + debugData[i].residual, cv::Scalar(0, 255, 0), 2);
 #else
-                        cv::circle(m_display, debugData[i].measurement,
-                                   cv::norm(debugData[i].residual),
-                                   cv::Scalar(20, 20, 20), 2);
+                        cv::circle(
+                            m_display, debugData[i].measurement,
+                            static_cast<int>(cv::norm(debugData[i].residual)),
+                            cv::Scalar(20, 20, 20), 2);
 #endif
                     }
 
@@ -203,8 +220,9 @@ class TrackerCalibrationApp {
                         reprojections);
                     const auto nBeacons = reprojections.size();
                     m_nBeacons = nBeacons;
-                    const auto beaconsToDisplay = std::min(
-                        MAX_BEACONS_TO_SHOW, static_cast<int>(nBeacons));
+                    const auto beaconsToDisplay =
+                        std::min(static_cast<std::size_t>(MAX_BEACONS_TO_SHOW),
+                                 nBeacons);
                     for (std::size_t i = 0; i < beaconsToDisplay; ++i) {
                         Eigen::Vector3d autocalibVariance =
                             vbtracker()
@@ -337,7 +355,7 @@ class TrackerCalibrationApp {
   private:
     ImageSourcePtr m_src;
     osvr::vbtracker::ConfigParams m_params;
-    const double m_distanceBetweenPanels;
+    const float m_distanceBetweenPanels;
     double m_firstNotch;
     double m_secondNotch;
     osvr::vbtracker::VideoBasedTracker m_vbtracker;

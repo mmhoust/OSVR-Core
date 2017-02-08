@@ -6,6 +6,10 @@ if(BUILD_DEV_VERBOSE)
 endif()
 configure_file(Verbosity.h.in "${CMAKE_CURRENT_BINARY_DIR}/Verbosity.h")
 
+if(BUILD_WITH_LOGGING_SINGLETON)
+    set(OSVR_UTIL_LOG_SINGLETON TRUE)
+endif()
+configure_file(LogConfig.h.in "${CMAKE_CURRENT_BINARY_DIR}/LogConfig.h")
 
 ###
 # Platform Config Header (and other external and internal configured headers)
@@ -44,6 +48,7 @@ set(API
     "${HEADER_LOCATION}/AnyMap.h"
     "${HEADER_LOCATION}/AnyMap_fwd.h"
     "${HEADER_LOCATION}/BasicTypeTraits.h"
+    "${HEADER_LOCATION}/BinaryLocation.h"
     "${HEADER_LOCATION}/BoolC.h"
     "${HEADER_LOCATION}/BoostDeletable.h"
     "${HEADER_LOCATION}/BoostIsCopyConstructible.h"
@@ -53,6 +58,7 @@ set(API
     "${HEADER_LOCATION}/ClientOpaqueTypesC.h"
     "${HEADER_LOCATION}/ClientReportTypesC.h"
     "${HEADER_LOCATION}/CSV.h"
+    "${HEADER_LOCATION}/CSVCellGroup.h"
     "${HEADER_LOCATION}/DefaultBool.h"
     "${HEADER_LOCATION}/DefaultPort.h"
     "${HEADER_LOCATION}/Deletable.h"
@@ -67,21 +73,30 @@ set(API
     "${HEADER_LOCATION}/Flag.h"
     "${HEADER_LOCATION}/GenericCaller.h"
     "${HEADER_LOCATION}/GenericDeleter.h"
+    "${HEADER_LOCATION}/GetEnvironmentVariable.h"
     "${HEADER_LOCATION}/GuardInterface.h"
     "${HEADER_LOCATION}/GuardInterfaceDummy.h"
     "${HEADER_LOCATION}/GuardPtr.h"
     "${HEADER_LOCATION}/ImagingReportTypesC.h"
     "${HEADER_LOCATION}/IndentingStream.h"
     "${HEADER_LOCATION}/KeyedOwnershipContainer.h"
+    "${HEADER_LOCATION}/Logger.h"
+    "${HEADER_LOCATION}/Log.h"
+    "${HEADER_LOCATION}/LogLevel.h"
+    "${HEADER_LOCATION}/LogLevelC.h"
+    "${HEADER_LOCATION}/LogNames.h"
+    "${HEADER_LOCATION}/LogRegistry.h"
     "${HEADER_LOCATION}/MatrixConventionsC.h"
     "${HEADER_LOCATION}/MatrixConventions.h"
     "${HEADER_LOCATION}/MatrixEigenAssign.h"
     "${HEADER_LOCATION}/MessageKeys.h"
     "${HEADER_LOCATION}/MSStdIntC.h"
     "${HEADER_LOCATION}/MacroToolsC.h"
+    "${HEADER_LOCATION}/MiniArgsHandling.h"
     "${HEADER_LOCATION}/Microsleep.h"
     "${HEADER_LOCATION}/NumberTypeManipulation.h"
     "${HEADER_LOCATION}/OpenCVTypeDispatch.h"
+    "${HEADER_LOCATION}/OpenCVVersion.h"
     "${HEADER_LOCATION}/PluginCallbackTypesC.h"
     "${HEADER_LOCATION}/PluginRegContextC.h"
     "${HEADER_LOCATION}/PointerWrapper.h"
@@ -109,6 +124,7 @@ set(API
     "${HEADER_LOCATION}/StringIds.h"
     "${HEADER_LOCATION}/TimeValue.h"
     "${HEADER_LOCATION}/TimeValueC.h"
+    "${HEADER_LOCATION}/TimeValueChrono.h"
     "${HEADER_LOCATION}/TimeValue_fwd.h"
     "${HEADER_LOCATION}/TreeNode.h"
     "${HEADER_LOCATION}/TreeNode_fwd.h"
@@ -128,9 +144,19 @@ set(API
 set(SOURCE
     AlignedMemoryC.cpp
     AnyMap.cpp
+    BinaryLocation.cpp
     Deletable.cpp
+    GetEnvironmentVariable.cpp
     GuardInterface.cpp
     TimeValueC.cpp
+    LogConfig.h.in
+    LogDefaults.h
+    Log.cpp
+    Logger.cpp
+    LogLevelTranslate.h
+    LogRegistry.cpp
+    LogSinks.h
+    LogUtils.h
     MatrixConventionsC.cpp
     MessageKeys.cpp
     PlatformConfig.h.in
@@ -138,6 +164,7 @@ set(SOURCE
     ClientCallbackTypesC.h.in
     ClientCallbackTypesCSnippet.h.in
     WideToUTF8.h.in
+    "${CMAKE_CURRENT_BINARY_DIR}/LogConfig.h"
     "${CMAKE_CURRENT_BINARY_DIR}/ClientCallbackTypesC.h"
     "${CMAKE_CURRENT_BINARY_DIR}/StdAlignWrapper.h"
     "${CMAKE_CURRENT_BINARY_DIR}/Verbosity.h"
@@ -167,7 +194,15 @@ target_link_libraries(${LIBNAME_FULL}
     PRIVATE
     vendored-vrpn
     eigen-headers
+    spdlog
+    boost_filesystem
     osvrTypePack)
+
+if(ANDROID)
+    target_link_libraries(${LIBNAME_FULL}
+        PRIVATE
+        log)
+endif()
 
 if(NOT OSVR_HAVE_STDALIGN)
     target_link_libraries(${LIBNAME_FULL}

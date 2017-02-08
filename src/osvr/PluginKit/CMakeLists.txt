@@ -58,6 +58,7 @@ target_link_libraries(${LIBNAME_FULL}
     osvrCommon
     jsoncpp_lib
     vendored-vrpn
+    spdlog
     boost_thread)
 
 # Add library alias to allow use of the same osvr_add_plugin script within this
