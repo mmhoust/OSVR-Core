@@ -1,6 +1,7 @@
 osvr_setup_lib_vars(ClientKit)
 
 set(API
+    "${HEADER_LOCATION}/AutoInitC.h"
     "${HEADER_LOCATION}/ClientKit.h"
     "${HEADER_LOCATION}/ClientKitC.h"
     "${HEADER_LOCATION}/Context.h"
@@ -24,6 +25,7 @@ set(API
     "${HEADER_LOCATION}/TransformsC.h")
 
 set(SOURCE
+    AutoInitC.cpp
     ClientKitC.cpp
     ContextC.cpp
     DisplayC.cpp
