@@ -51,6 +51,7 @@ bool isServerRunning()
 	CloseHandle(snapshot);
 	return false;
 #elif defined(OSVR_LINUX)
+/*
 	DIR *proc = opendir("/proc");
 	
 	for (dirent *process = readdir(proc); process; process = readdir(proc))
@@ -87,10 +88,10 @@ bool isServerRunning()
 	}
 	
 	closedir(proc);
-	return false;
+	return false;*/
+	return (system("ps -eo comm | grep -q osvr_server") == 0);
 #elif defined(OSVR_MACOSX)
-	// @todo Implement Mac OS specific code.
-	// NOTE: This might be the same as the Linux code.
+	return (system("ps -eo comm | grep -q osvr_server") == 0);
 #else
 	// @todo Throw error.
 	return false;
