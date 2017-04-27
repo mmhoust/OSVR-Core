@@ -9,6 +9,7 @@ endif()
 # These are "extra"
 set(CLIENTS
     AnalogCallback
+    AutoInit
     ButtonCallback
     TrackerCallback
     DisplayParameter
